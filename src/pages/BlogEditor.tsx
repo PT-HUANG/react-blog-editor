@@ -7,7 +7,6 @@ function BlogEditor() {
   const [description, setDescription] = useState("");
   const [keywords, setKeywords] = useState("");
   const [GTM, setGTM] = useState("");
-  const [linkUrl, setLinkUrl] = useState("");
 
   return (
     <>
@@ -45,21 +44,12 @@ function BlogEditor() {
             onChange={(e) => setGTM(e.target.value)}
             className="border-gray-300 rounded-sm focus-visible:border-blue-300 focus-visible:ring-blue-300 focus-visible:ring-[1px]"
           />
-          <label className="text-xl font-bold mt-4 mb-1">跳轉連結</label>
-          <Input
-            type="text"
-            placeholder="輸入想要跳轉的網址"
-            value={linkUrl}
-            onChange={(e) => setLinkUrl(e.target.value)}
-            className="border-gray-300 rounded-sm focus-visible:border-blue-300 focus-visible:ring-blue-300 focus-visible:ring-[1px]"
-          />
           <div className="text-xl font-bold mt-4">內文編輯區</div>
           <QuillEditor
             title={title}
             description={description}
             keywords={keywords}
             GTM={GTM}
-            linkUrl={linkUrl}
           />
         </div>
       </div>

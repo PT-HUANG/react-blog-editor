@@ -160,7 +160,7 @@
   background: #555;
 }
 
-.ql-font .ql-picker > .ql-picker-label {
+.ql-font .ql-picker>.ql-picker-label {
   font-size: 12px;
 }
 
@@ -185,6 +185,7 @@
 .ql-picker.ql-font {
   .ql-picker-item {
     font-size: 0;
+
     &:before {
       content: attr(data-value) !important;
       font-size: 12px;

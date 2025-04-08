@@ -1,9 +1,11 @@
 import Quill from "quill";
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import divider from "@/customBlots/dividerBlot";
+import { Font } from "@/customFormats/font";
+import CustomDivider from "@/customBlots/divider";
+import CustomLink from "@/customFormats/link";
 
 const icons = ReactQuill.Quill.import("ui/icons") as any;
 icons["link"] = '<i class="fa-solid fa-link"></i>';
@@ -16,33 +18,23 @@ type QuillEditorProps = {
   description: string;
   keywords: string;
   GTM: string;
-  linkUrl: string;
 };
 
-const Font = Quill.import("formats/font") as any;
-Font.whitelist = ["Arial", "Roboto", "NotoSansTC", "SourceSans3", "SansSerif"];
-Quill.register(Font, true);
-Quill.register(divider);
+Quill.register(CustomDivider);
+Quill.register(CustomLink);
 
-function QuillEditor({
-  title,
-  description,
-  keywords,
-  GTM,
-  linkUrl,
-}: QuillEditorProps) {
+function QuillEditor({ title, description, keywords, GTM }: QuillEditorProps) {
   const [content, setContent] = useState("");
   const quillRef = useRef<ReactQuill | null>(null);
 
   const modules = {
     toolbar: {
       handlers: {
-        customButton: () => console.log("handle custom button"),
         divider: () => {
           const editor = quillRef.current?.getEditor();
           const range = editor?.getSelection();
           if (range) {
-            editor?.insertEmbed(range.index, "divider", true); // 插入自定義divider
+            editor?.insertEmbed(range.index, "divider", true);
           }
         },
       },
@@ -77,6 +69,7 @@ function QuillEditor({
     html = html.replace(/ class="ql-size-large"/g, ' class="font-size-large"');
     html = html.replace(/<\/?span>/g, "");
     html = html.replace(/<p>\s*(<img[^>]+>)\s*<\/p>/g, "$1");
+    html = html.replace(/&nbsp;/g, "");
     return html;
   };
 
