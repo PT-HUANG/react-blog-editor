@@ -1,11 +1,14 @@
 import Quill from "quill";
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Font } from "@/customFormats/font";
 import CustomDivider from "@/customBlots/divider";
 import CustomLink from "@/customFormats/link";
+import JSZip from "jszip";
+import { saveAs } from "file-saver";
+import { cssFiles } from "@/constants/cssFiles";
 
 const icons = ReactQuill.Quill.import("ui/icons") as any;
 icons["link"] = '<i class="fa-solid fa-link"></i>';
@@ -50,12 +53,96 @@ function QuillEditor({ title, description, keywords, GTM }: QuillEditorProps) {
     },
   };
 
-  const handleSemanticHTML = () => {
+  // 方法1
+  // const handleSemanticHTML = () => {
+  //   if (quillRef.current) {
+  //     const editor = quillRef.current.getEditor();
+  //     const length = editor.getLength();
+  //     const html = editor.getSemanticHTML(0, length);
+
+  //     // 包裝成完整 HTML 檔案
+  //     const fullHtml = htmlStructure1 + cleanHtmlContent(html) + htmlStructure2;
+
+  //     // 建立 blob
+  //     const blob = new Blob([fullHtml], { type: "text/html" });
+
+  //     // 建立下載連結
+  //     const url = URL.createObjectURL(blob);
+  //     const a = document.createElement("a");
+  //     a.href = url;
+  //     a.download = "index.html";
+  //     a.style.display = "none";
+
+  //     document.body.appendChild(a);
+  //     a.click();
+
+  //     // 清除 DOM 和 URL 物件
+  //     document.body.removeChild(a);
+  //     URL.revokeObjectURL(url);
+  //   }
+  // };
+
+  // 方法2
+  // const handleSemanticHTML = async () => {
+  //   if (quillRef.current) {
+  //     const editor = quillRef.current.getEditor();
+  //     const length = editor.getLength();
+  //     const html = editor.getSemanticHTML(0, length);
+  //     const fullHtml = htmlStructure1 + cleanHtmlContent(html) + htmlStructure2;
+
+  //     // 使用 File System Access API
+  //     try {
+  //       // @ts-expect-error: showSaveFilePicker 是實驗性 API
+  //       const fileHandle = await window.showSaveFilePicker({
+  //         suggestedName: "index.html",
+  //         startIn: "desktop",
+  //         types: [
+  //           {
+  //             description: "HTML File",
+  //             accept: { "text/html": [".html"] },
+  //           },
+  //         ],
+  //       });
+
+  //       const writable = await fileHandle.createWritable();
+  //       await writable.write(fullHtml);
+  //       await writable.close();
+  //       console.log("儲存完成！");
+  //     } catch (err) {
+  //       console.error("使用者取消儲存或發生錯誤", err);
+  //     }
+  //   }
+  // };
+
+  // 方法3 jszip
+  const handleExport = async () => {
     if (quillRef.current) {
       const editor = quillRef.current.getEditor();
       const length = editor.getLength();
       const html = editor.getSemanticHTML(0, length);
-      console.log(htmlStructure1 + cleanHtmlContent(html) + htmlStructure2);
+      const fullHtml = htmlStructure1 + cleanHtmlContent(html) + htmlStructure2;
+
+      // 創建新的 ZIP 檔案
+      const zip = new JSZip();
+
+      // 1. 將 index.html 加入到 ZIP 檔案中
+      zip.file("index.html", fullHtml);
+
+      // 2. 將外部導入的 CSS 檔案加入到 ZIP 資料夾
+      const cssFolder = zip.folder("css");
+      for (const file of cssFiles) {
+        if (cssFolder) {
+          cssFolder.file(file.filename, file.content); // 加入文件
+        }
+      }
+
+      // 3. 創建 images 資料夾（如果有圖片，將它們放進這個資料夾）
+      zip.folder("images");
+
+      // 4. 生成 ZIP 檔案並提供下載
+      zip.generateAsync({ type: "blob" }).then(function (content) {
+        saveAs(content, "exported_project.zip");
+      });
     }
   };
 
@@ -100,7 +187,6 @@ function QuillEditor({ title, description, keywords, GTM }: QuillEditorProps) {
         />
 
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
-        <script type="text/javascript" src="main.js"></script>
 
         <!-- jquery -->
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -179,7 +265,7 @@ function QuillEditor({ title, description, keywords, GTM }: QuillEditorProps) {
       />
       <div className="mt-4 flex justify-end">
         <Button
-          onClick={handleSemanticHTML}
+          onClick={handleExport}
           className="mx-1 rounded-sm bg-green-500 hover:bg-green-400 cursor-pointer"
         >
           Export

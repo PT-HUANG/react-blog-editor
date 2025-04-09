@@ -36,4 +36,3 @@ function sanitize(url: string, protocols: any) {
   return protocols.indexOf(protocol) > -1;
 }
 export { CustomLink as default, sanitize };
-//# sourceMappingURL=link.js.map
