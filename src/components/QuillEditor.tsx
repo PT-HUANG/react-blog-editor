@@ -10,7 +10,7 @@ import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import { cssFiles } from "@/constants/cssFiles";
 
-const icons = ReactQuill.Quill.import("ui/icons") as any;
+const icons = ReactQuill.Quill.import("ui/icons") as Record<string, string>;
 icons["link"] = '<i class="fa-solid fa-link"></i>';
 icons["image"] = '<i class="fa-solid fa-image"></i>';
 icons["video"] = '<i class="fa-solid fa-film"></i>';
@@ -140,8 +140,13 @@ function QuillEditor({ title, description, keywords, GTM }: QuillEditorProps) {
       zip.folder("images");
 
       // 4. 生成 ZIP 檔案並提供下載
+      const folderName = `CP_${new Date()
+        .toISOString()
+        .slice(0, 10)
+        .replace(/-/g, "")}`;
+
       zip.generateAsync({ type: "blob" }).then(function (content) {
-        saveAs(content, "exported_project.zip");
+        saveAs(content, folderName);
       });
     }
   };
@@ -152,11 +157,27 @@ function QuillEditor({ title, description, keywords, GTM }: QuillEditorProps) {
       ""
     );
     html = html.replace(/background-color: transparent;/g, "");
-    html = html.replace(/ class="ql-align-center"/g, "");
+    html = html.replace(
+      / class="ql-align-center"/g,
+      ' class="text-align-center"'
+    );
+    html = html.replace(
+      / class="ql-align-right"/g,
+      ' class="text-align-right"'
+    );
+    html = html.replace(
+      / class="ql-align-justify"/g,
+      ' class="text-align-justify"'
+    );
     html = html.replace(/ class="ql-size-large"/g, ' class="font-size-large"');
-    html = html.replace(/<\/?span>/g, "");
     html = html.replace(/<p>\s*(<img[^>]+>)\s*<\/p>/g, "$1");
     html = html.replace(/&nbsp;/g, "");
+    html = html.replace(/<p><hr><\/p>/g, "<hr>");
+    html = html.replace(/<span>\s*((?:.|\n)*?)\s*<\/span>/g, "$1");
+    html = html.replace(
+      /<span style="background-color: rgb\(255, 255, 255\); color: rgb\(34, 34, 34\);?">\s*((?:.|\n)*?)\s*<\/span>/g,
+      "$1"
+    );
     return html;
   };
 

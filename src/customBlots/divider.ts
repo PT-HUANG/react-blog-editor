@@ -1,8 +1,8 @@
 import Quill from "quill";
 
-const Block = Quill.import('blots/block') as any;
+const Embed = Quill.import('blots/embed') as any;
 
-class CustomDivider extends Block {
+class CustomDivider extends Embed {
   static blotName = 'divider';
   static tagName = 'hr';
 }
