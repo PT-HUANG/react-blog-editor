@@ -122,31 +122,35 @@ function QuillEditor({ title, description, keywords, GTM }: QuillEditorProps) {
       const html = editor.getSemanticHTML(0, length);
       const fullHtml = htmlStructure1 + cleanHtmlContent(html) + htmlStructure2;
 
+      // debug
+      console.log(fullHtml);
+
       // 創建新的 ZIP 檔案
       const zip = new JSZip();
 
-      // 1. 將 index.html 加入到 ZIP 檔案中
-      zip.file("index.html", fullHtml);
-
-      // 2. 將外部導入的 CSS 檔案加入到 ZIP 資料夾
-      const cssFolder = zip.folder("css");
-      for (const file of cssFiles) {
-        if (cssFolder) {
-          cssFolder.file(file.filename, file.content); // 加入文件
-        }
-      }
-
-      // 3. 創建 images 資料夾（如果有圖片，將它們放進這個資料夾）
-      zip.folder("images");
-
-      // 4. 生成 ZIP 檔案並提供下載
       const folderName = `CP_${new Date()
         .toISOString()
         .slice(0, 10)
         .replace(/-/g, "")}`;
 
+      // 建立主資料夾
+      const mainFolder = zip.folder(folderName);
+
+      // 1. 將 index.html 加入到主資料夾中
+      mainFolder?.file("index.html", fullHtml);
+
+      // 2. 將外部導入的 CSS 檔案加入到主資料夾底下的 css 資料夾
+      const cssFolder = mainFolder?.folder("css");
+      for (const file of cssFiles) {
+        cssFolder?.file(file.filename, file.content);
+      }
+
+      // 3. 創建空的 images 資料夾
+      mainFolder?.folder("images");
+
+      // 4. 生成 ZIP 檔案並提供下載（ZIP 本身會是 `CP_20250410.zip`，裡面會有 `CP_20250410/` 資料夾）
       zip.generateAsync({ type: "blob" }).then(function (content) {
-        saveAs(content, folderName);
+        saveAs(content, `${folderName}.zip`);
       });
     }
   };
@@ -176,6 +180,14 @@ function QuillEditor({ title, description, keywords, GTM }: QuillEditorProps) {
     html = html.replace(/<span>\s*((?:.|\n)*?)\s*<\/span>/g, "$1");
     html = html.replace(
       /<span style="background-color: rgb\(255, 255, 255\); color: rgb\(34, 34, 34\);?">\s*((?:.|\n)*?)\s*<\/span>/g,
+      "$1"
+    );
+    html = html.replace(
+      /<span style="color: rgb\(0, 0, 0\);?">\s*(.*?)\s*<\/span>/g,
+      "$1"
+    );
+    html = html.replace(
+      /<span style="color: rgb\(34, 34, 34\); background-color: rgb\(255, 255, 255\);?">\s*(.*?)\s*<\/span\s*>/g,
       "$1"
     );
     return html;
@@ -266,6 +278,7 @@ function QuillEditor({ title, description, keywords, GTM }: QuillEditorProps) {
                 style="display:none;visibility:hidden"></iframe></noscript>
         <!-- End Google Tag Manager (noscript) -->
         <!-- GTM 填寫區 E-->
+
         <!--  以下為內文編輯區  -->
         <div class="CP">`;
 
