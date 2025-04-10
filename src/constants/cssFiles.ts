@@ -306,10 +306,6 @@ p {
         font-size: var(--fs-normal);
     }
 
-    p {
-        font-weight: 300;
-    }
-
     .txt-big {
         font-size: var(--fs-l);
     }
@@ -342,7 +338,8 @@ p {
 
 .text-align-justify {
     text-align: justify;
-}`
+}
+`
 
 const offer = ""
 
