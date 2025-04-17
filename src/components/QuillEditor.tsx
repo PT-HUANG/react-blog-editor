@@ -125,33 +125,33 @@ function QuillEditor({ title, description, keywords, GTM }: QuillEditorProps) {
       // debug
       console.log(fullHtml);
 
-      // 創建新的 ZIP 檔案
-      const zip = new JSZip();
+      // // 創建新的 ZIP 檔案
+      // const zip = new JSZip();
 
-      const folderName = `CP_${new Date()
-        .toISOString()
-        .slice(0, 10)
-        .replace(/-/g, "")}`;
+      // const folderName = `CP_${new Date()
+      //   .toISOString()
+      //   .slice(0, 10)
+      //   .replace(/-/g, "")}`;
 
-      // 建立主資料夾
-      const mainFolder = zip.folder(folderName);
+      // // 建立主資料夾
+      // const mainFolder = zip.folder(folderName);
 
-      // 1. 將 index.html 加入到主資料夾中
-      mainFolder?.file("index.html", fullHtml);
+      // // 1. 將 index.html 加入到主資料夾中
+      // mainFolder?.file("index.html", fullHtml);
 
-      // 2. 將外部導入的 CSS 檔案加入到主資料夾底下的 css 資料夾
-      const cssFolder = mainFolder?.folder("css");
-      for (const file of cssFiles) {
-        cssFolder?.file(file.filename, file.content);
-      }
+      // // 2. 將外部導入的 CSS 檔案加入到主資料夾底下的 css 資料夾
+      // const cssFolder = mainFolder?.folder("css");
+      // for (const file of cssFiles) {
+      //   cssFolder?.file(file.filename, file.content);
+      // }
 
-      // 3. 創建空的 images 資料夾
-      mainFolder?.folder("images");
+      // // 3. 創建空的 images 資料夾
+      // mainFolder?.folder("images");
 
-      // 4. 生成 ZIP 檔案並提供下載（ZIP 本身會是 `CP_20250410.zip`，裡面會有 `CP_20250410/` 資料夾）
-      zip.generateAsync({ type: "blob" }).then(function (content) {
-        saveAs(content, `${folderName}.zip`);
-      });
+      // // 4. 生成 ZIP 檔案並提供下載（ZIP 本身會是 `CP_20250410.zip`，裡面會有 `CP_20250410/` 資料夾）
+      // zip.generateAsync({ type: "blob" }).then(function (content) {
+      //   saveAs(content, `${folderName}.zip`);
+      // });
     }
   };
 
@@ -190,6 +190,21 @@ function QuillEditor({ title, description, keywords, GTM }: QuillEditorProps) {
       /<span style="color: rgb\(34, 34, 34\); background-color: rgb\(255, 255, 255\);?">\s*(.*?)\s*<\/span\s*>/g,
       "$1"
     );
+    html = html.replace(
+      /<span style="background-color:\s*rgb\(255,\s*255,\s*0\);\s*color:\s*rgb\(0,\s*0,\s*0\);?">(.*?)<\/span>/g,
+      '<span class="text-highlight">$1</span>'
+    );
+
+    let count = 1;
+
+    html = html.replace(
+      /<p><img\s+[^>]*src="[^"]+?"([^>]*)><\/p>/g,
+      (match, attrs) => {
+        return `<p><img src="images/${count++}.jpg"${attrs}></p>`;
+      }
+    );
+
+    html = html.replace(/<\/p>\s*<p><img/g, "</p>\n<br>\n<p><img");
     return html;
   };
 
@@ -284,6 +299,13 @@ function QuillEditor({ title, description, keywords, GTM }: QuillEditorProps) {
 
   const htmlStructure2 = `
         </div>
+        <!-- Lazy load -->
+        <script src="js/lazy.js"></script>
+
+        <!-- ※LP用|編集削除禁止 -->
+        <div id="acs_lp_form"></div>
+        <script src="https://code.cros.tw/init.js"></script>
+        <!-- ※LP用|編集削除禁止 -->
       </body>
     </html>`;
 

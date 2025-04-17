@@ -84,7 +84,6 @@ img {
     max-width: 100%;
     height: auto;
     display: block;
-    margin: 2rem 0;
 }
 
 ul,
@@ -339,11 +338,193 @@ p {
 .text-align-justify {
     text-align: justify;
 }
+
+.text-highlight {
+  background-color: yellow;
+  color: black;
+}
 `
 
-const offer = ""
+const offer = `
+/* 按鈕閃光 S */
+.light {
+  width: 100%;
+  text-align: center;
+  font-size: 2rem;
+  overflow: hidden;
+  display: block;
+  position: relative;
+}
 
-const other = ""
+.light:after {
+  content: "";
+  display: block;
+  position: absolute;
+  left: -150%;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  background: -webkit-linear-gradient(left, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.7) 100%);
+  background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.7) 100%);
+  -webkit-transform: skewX(-25deg);
+  transform: skewX(-25deg);
+  animation: light 3s infinite ease-in-out;
+}
+
+@keyframes light {
+  0% {
+    left: -150%;
+  }
+
+  70% {
+    left: 150%;
+  }
+
+  100% {
+    left: 150%;
+  }
+}
+
+/* 按鈕跳動-果凍 */
+.bounce {
+  animation: bounce 2s infinite ease-in-out;
+}
+
+@keyframes bounce {
+  0% {
+    transform: scale(1, 1) translate3d(0, 0, 0);
+  }
+
+  10% {
+    transform: scale(1.05, .95) translate3d(0, 0, 0);
+  }
+
+  30% {
+    transform: scale(.95, 1.05) translate3d(0, -8%, 0);
+  }
+
+  50% {
+    transform: scale(1.02, .97) translate3d(0, 0, 0);
+  }
+
+  57% {
+    transform: scale(1, 1) translate3d(0, -2%, 0);
+  }
+
+  64% {
+    transform: scale(1, 1) translate3d(0, 0, 0);
+  }
+
+  100% {
+    transform: scale(1, 1) translate3d(0, 0, 0);
+  }
+}
+
+/* 放大縮小 */
+.shrink {
+  animation: shrink 2s infinite linear;
+}
+
+
+@keyframes shrink {
+  0% {
+    transform: scale(1, 1);
+  }
+
+  50% {
+    transform: scale(1.05, 1.05);
+  }
+
+  100% {
+    transform: scale(1, 1);
+  }
+}
+
+/* 漂浮 */
+.float {
+  animation: float 1.5s infinite ease-in-out alternate;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(-10px)
+  }
+
+  100% {
+    transform: translateY(10px);
+  }
+}
+
+.offerBtn {
+  transition: all .3s;
+}
+
+.offerBtn:hover {
+  opacity: 0.9;
+}
+`
+
+const other = `
+.top_mark {
+  font-family: 'Noto Serif';
+  padding: 2.5rem 0;
+  border-width: 0 0 0 0;
+  border-style: solid;
+  border-color: black;
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  background-color: #000;
+  color: #fff;
+  font-weight: 700;
+}
+
+.title_main {
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-align: center;
+  line-height: 3rem;
+}
+
+.title-menu {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.2em;
+  text-align: center;
+}
+
+@media screen and (min-width: 768px) {
+  .top_mark {
+    padding: 2rem 0;
+  }
+
+  .title_main {
+    font-size: 3.5rem;
+    line-height: 6rem;
+  }
+
+  .title-menu {
+    font-size: 1.5rem;
+  }
+}
+
+.w-80 {
+  width: 80%;
+}
+
+.w-70 {
+  width: 70%;
+}
+
+.w-60 {
+  width: 60%;
+}
+
+.w-50 {
+  width: 60%;
+}
+`
 
 export const cssFiles = [
   { filename: "variables.css", content: variables },
