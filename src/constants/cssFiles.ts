@@ -75,104 +75,106 @@ EX:
 `
 const normal = `
 body {
-    padding: 0;
-    margin: 0;
-    font-family: var(--font-family);
+  padding: 0;
+  margin: 0;
+  font-family: var(--font-family);
 }
 
 img {
-    max-width: 100%;
-    height: auto;
-    display: block;
+  max-width: 100%;
+  height: auto;
+  display: block;
 }
 
 ul,
 li {
-    margin: 0;
-    padding: 0;
-    list-style: none;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 a {
-    text-decoration: none;
-    transition: all .3s;
-    color: unset;
+  text-decoration: none;
+  transition: all 0.3s;
+  color: unset;
 }
 
 a:hover {
-    opacity: .7;
+  opacity: 0.7;
 }
 
 a:visited {
-    color: unset;
+  color: unset;
 }
 
 *,
 *::after,
 *::before {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 .relative {
-    position: relative;
+  position: relative;
 }
 
 .absolute {
-    position: absolute;
+  position: absolute;
 }
 
 /* 以上基本設定 */
 hr {
-    margin: var(--fs-l) 0;
+  margin: var(--fs-l) 0;
 }
 
 .CP {
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 20px;
-    border-left: var(--light-second) solid thin;
-    border-right: var(--light-second) solid thin;
-    line-height: 2em;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+  border-left: var(--light-second) solid thin;
+  border-right: var(--light-second) solid thin;
+  line-height: 2em;
 }
 
 #title {
-    margin: 20px 0;
-    text-align: start;
+  margin: 20px 0;
+  text-align: start;
 }
 
 .headline {
-    font-size: var(--fs-s);
-    font-weight: 500;
-    line-height: var(--fs-xxl);
-    border-left: 8px solid;
-    border-bottom: 2px solid;
-    border-color: #ff448f;
-    padding-left: 2%;
-    margin-bottom: 20px;
+  font-size: var(--fs-s);
+  font-weight: 500;
+  line-height: var(--fs-xxl);
+  border-left: 8px solid;
+  border-bottom: 2px solid;
+  border-color: #ff448f;
+  padding-left: 2%;
+  margin-bottom: 20px;
 }
 
 .brSP {
-    display: block;
+  display: block;
 }
 
 @media screen and (min-width: 768px) {
-    .CP {
-        padding: 50px 100px;
-    }
+  .CP {
+    padding: 50px 100px;
+  }
 
-    #title {
-        margin: 40px 0;
-    }
+  #title {
+    margin: 40px 0;
+  }
 
-    .headline {
-        font-size: var(--fs-m);
-        border-left: 12px solid;
-    }
+  .headline {
+    font-size: var(--fs-m);
+    border-left: 12px solid;
+  }
 
-    .brSP {
-        display: none;
-    }
-}`
+  .brSP {
+    display: none;
+  }
+}
+
+`
 
 const header = `
 /*------------------------------------*    $標題區塊
@@ -466,7 +468,7 @@ const offer = `
 
 const other = `
 .top_mark {
-  font-family: 'Noto Serif';
+  font-family: "Noto Serif";
   padding: 2.5rem 0;
   border-width: 0 0 0 0;
   border-style: solid;
@@ -494,6 +496,27 @@ const other = `
   text-align: center;
 }
 
+.video-container {
+    position: relative;
+    width: 100%;
+    top: 50%;
+    left: 0%;
+    padding-bottom: 56.25%;
+    padding-top: 0px;
+    height: 0;
+    overflow: hidden;
+}
+
+.video-container iframe,
+.video-container object,
+.video-container embed {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
 @media screen and (min-width: 768px) {
   .top_mark {
     padding: 2rem 0;
@@ -509,21 +532,6 @@ const other = `
   }
 }
 
-.w-80 {
-  width: 80%;
-}
-
-.w-70 {
-  width: 70%;
-}
-
-.w-60 {
-  width: 60%;
-}
-
-.w-50 {
-  width: 60%;
-}
 `
 
 export const cssFiles = [

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Font } from "@/customFormats/font";
 import CustomDivider from "@/customBlots/divider";
 import CustomLink from "@/customFormats/link";
+import CustomVideo from "@/customFormats/video";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import { cssFiles } from "@/constants/cssFiles";
@@ -25,6 +26,7 @@ type QuillEditorProps = {
 
 Quill.register(CustomDivider);
 Quill.register(CustomLink);
+Quill.register(CustomVideo);
 
 function QuillEditor({ title, description, keywords, GTM }: QuillEditorProps) {
   const [content, setContent] = useState("");
@@ -53,68 +55,6 @@ function QuillEditor({ title, description, keywords, GTM }: QuillEditorProps) {
     },
   };
 
-  // 方法1
-  // const handleSemanticHTML = () => {
-  //   if (quillRef.current) {
-  //     const editor = quillRef.current.getEditor();
-  //     const length = editor.getLength();
-  //     const html = editor.getSemanticHTML(0, length);
-
-  //     // 包裝成完整 HTML 檔案
-  //     const fullHtml = htmlStructure1 + cleanHtmlContent(html) + htmlStructure2;
-
-  //     // 建立 blob
-  //     const blob = new Blob([fullHtml], { type: "text/html" });
-
-  //     // 建立下載連結
-  //     const url = URL.createObjectURL(blob);
-  //     const a = document.createElement("a");
-  //     a.href = url;
-  //     a.download = "index.html";
-  //     a.style.display = "none";
-
-  //     document.body.appendChild(a);
-  //     a.click();
-
-  //     // 清除 DOM 和 URL 物件
-  //     document.body.removeChild(a);
-  //     URL.revokeObjectURL(url);
-  //   }
-  // };
-
-  // 方法2
-  // const handleSemanticHTML = async () => {
-  //   if (quillRef.current) {
-  //     const editor = quillRef.current.getEditor();
-  //     const length = editor.getLength();
-  //     const html = editor.getSemanticHTML(0, length);
-  //     const fullHtml = htmlStructure1 + cleanHtmlContent(html) + htmlStructure2;
-
-  //     // 使用 File System Access API
-  //     try {
-  //       // @ts-expect-error: showSaveFilePicker 是實驗性 API
-  //       const fileHandle = await window.showSaveFilePicker({
-  //         suggestedName: "index.html",
-  //         startIn: "desktop",
-  //         types: [
-  //           {
-  //             description: "HTML File",
-  //             accept: { "text/html": [".html"] },
-  //           },
-  //         ],
-  //       });
-
-  //       const writable = await fileHandle.createWritable();
-  //       await writable.write(fullHtml);
-  //       await writable.close();
-  //       console.log("儲存完成！");
-  //     } catch (err) {
-  //       console.error("使用者取消儲存或發生錯誤", err);
-  //     }
-  //   }
-  // };
-
-  // 方法3 jszip
   const handleExport = async () => {
     if (quillRef.current) {
       const editor = quillRef.current.getEditor();
@@ -125,59 +65,44 @@ function QuillEditor({ title, description, keywords, GTM }: QuillEditorProps) {
       // debug
       console.log(fullHtml);
 
-      // // 創建新的 ZIP 檔案
-      // const zip = new JSZip();
+      // 創建新的 ZIP 檔案
+      const zip = new JSZip();
 
-      // const folderName = `CP_${new Date()
-      //   .toISOString()
-      //   .slice(0, 10)
-      //   .replace(/-/g, "")}`;
+      const folderName = `CP_${new Date()
+        .toISOString()
+        .slice(0, 10)
+        .replace(/-/g, "")}`;
 
-      // // 建立主資料夾
-      // const mainFolder = zip.folder(folderName);
+      // 建立主資料夾
+      const mainFolder = zip.folder(folderName);
 
-      // // 1. 將 index.html 加入到主資料夾中
-      // mainFolder?.file("index.html", fullHtml);
+      // 1. 將 index.html 加入到主資料夾中
+      mainFolder?.file("index.html", fullHtml);
 
-      // // 2. 將外部導入的 CSS 檔案加入到主資料夾底下的 css 資料夾
-      // const cssFolder = mainFolder?.folder("css");
-      // for (const file of cssFiles) {
-      //   cssFolder?.file(file.filename, file.content);
-      // }
+      // 2. 將外部導入的 CSS 檔案加入到主資料夾底下的 css 資料夾
+      const cssFolder = mainFolder?.folder("css");
+      for (const file of cssFiles) {
+        cssFolder?.file(file.filename, file.content);
+      }
 
-      // // 3. 創建空的 images 資料夾
-      // mainFolder?.folder("images");
+      // 3. 創建空的 images 資料夾
+      mainFolder?.folder("images");
 
-      // // 4. 生成 ZIP 檔案並提供下載（ZIP 本身會是 `CP_20250410.zip`，裡面會有 `CP_20250410/` 資料夾）
-      // zip.generateAsync({ type: "blob" }).then(function (content) {
-      //   saveAs(content, `${folderName}.zip`);
-      // });
+      // 4. 生成 ZIP 檔案並提供下載（ZIP 本身會是 `CP_20250410.zip`，裡面會有 `CP_20250410/` 資料夾）
+      zip.generateAsync({ type: "blob" }).then(function (content) {
+        saveAs(content, `${folderName}.zip`);
+      });
     }
   };
 
   const cleanHtmlContent = (html: string): string => {
+    // ---------- 🎨 清除預設顏色樣式 ----------
     html = html.replace(
       / style="background-color: transparent; color: rgb\(0, 0, 0\);"/g,
       ""
     );
     html = html.replace(/background-color: transparent;/g, "");
-    html = html.replace(
-      / class="ql-align-center"/g,
-      ' class="text-align-center"'
-    );
-    html = html.replace(
-      / class="ql-align-right"/g,
-      ' class="text-align-right"'
-    );
-    html = html.replace(
-      / class="ql-align-justify"/g,
-      ' class="text-align-justify"'
-    );
-    html = html.replace(/ class="ql-size-large"/g, ' class="font-size-large"');
-    html = html.replace(/<p>\s*(<img[^>]+>)\s*<\/p>/g, "$1");
-    html = html.replace(/&nbsp;/g, "");
-    html = html.replace(/<p><hr><\/p>/g, "<hr>");
-    html = html.replace(/<span>\s*((?:.|\n)*?)\s*<\/span>/g, "$1");
+
     html = html.replace(
       /<span style="background-color: rgb\(255, 255, 255\); color: rgb\(34, 34, 34\);?">\s*((?:.|\n)*?)\s*<\/span>/g,
       "$1"
@@ -190,21 +115,55 @@ function QuillEditor({ title, description, keywords, GTM }: QuillEditorProps) {
       /<span style="color: rgb\(34, 34, 34\); background-color: rgb\(255, 255, 255\);?">\s*(.*?)\s*<\/span\s*>/g,
       "$1"
     );
+
+    // ---------- ✨ 特殊高亮樣式轉 class ----------
     html = html.replace(
       /<span style="background-color:\s*rgb\(255,\s*255,\s*0\);\s*color:\s*rgb\(0,\s*0,\s*0\);?">(.*?)<\/span>/g,
       '<span class="text-highlight">$1</span>'
     );
 
-    let count = 1;
-
+    // ---------- 🏷️ 替換對齊 class ----------
     html = html.replace(
-      /<p><img\s+[^>]*src="[^"]+?"([^>]*)><\/p>/g,
-      (match, attrs) => {
-        return `<p><img src="images/${count++}.jpg"${attrs}></p>`;
-      }
+      / class="ql-align-center"/g,
+      ' class="text-align-center"'
+    );
+    html = html.replace(
+      / class="ql-align-right"/g,
+      ' class="text-align-right"'
+    );
+    html = html.replace(
+      / class="ql-align-justify"/g,
+      ' class="text-align-justify"'
     );
 
-    html = html.replace(/<\/p>\s*<p><img/g, "</p>\n<br>\n<p><img");
+    // ---------- 🔠 替換文字大小 class ----------
+    html = html.replace(/ class="ql-size-large"/g, ' class="font-size-large"');
+
+    // ---------- 🧱 清理結構 ----------
+    // 移除多餘的 <span> 包裹
+    html = html.replace(/<span>\s*((?:.|\n)*?)\s*<\/span>/g, "$1");
+
+    // 將 <p> 包住 <hr> 的情況簡化
+    html = html.replace(/<p><hr><\/p>/g, "<hr>");
+
+    // 清除 &nbsp;
+    html = html.replace(/&nbsp;/g, "");
+
+    // 移除 <p> 包住 <img> 的情況（含任何屬性，如 class）
+    html = html.replace(/<p[^>]*>\s*(<img[^>]+>)\s*<\/p>/g, "$1");
+
+    // ---------- 🖼️ 處理圖片 ----------
+    let count = 1;
+
+    // 將所有 img src 改為 images/{count}.jpg
+    html = html.replace(
+      /<img\s+[^>]*src="[^"]+?"([^>]*)>/gs,
+      (_, attrs) => `<img src="images/${count++}.jpg"${attrs}>`
+    );
+
+    // 移除完全沒有內容的 <p> 標籤（包含有 class 的情況）
+    html = html.replace(/<p[^>]*>\s*<\/p>/g, "");
+
     return html;
   };
 
