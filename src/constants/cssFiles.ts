@@ -345,6 +345,14 @@ p {
   background-color: yellow;
   color: black;
 }
+
+.text-red {
+  color: red;
+}
+
+.text-blue {
+  color: blue;
+}
 `
 
 const offer = `

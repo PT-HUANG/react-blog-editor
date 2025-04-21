@@ -121,6 +121,10 @@
 }
 
 /* Quill 編輯器外觀自定義 */
+p {
+  font-size: 1.15rem !important;
+}
+
 .ql-toolbar {
   border: 2px solid #a99072 !important;
   border-radius: 6px 6px 0 0;
@@ -181,6 +185,76 @@
   font-size: 0.8rem;
 }
 
+/* Quill 字體大小自定義 */
+.ql-picker.ql-size {
+  .ql-picker-item {
+    font-size: 0;
+
+    &:before {
+      content: attr(data-value) !important;
+      font-size: 14px;
+    }
+  }
+}
+
+.ql-picker.ql-size {
+  .ql-active {
+    &:before {
+      content: attr(data-value) !important;
+      font-size: 14px;
+    }
+  }
+}
+
+.ql-picker.ql-size .ql-picker-item[data-value="Normal"]::before {
+  font-size: 1.15rem;
+}
+
+.ql-picker.ql-size .ql-picker-item[data-value="txt-xxs"]::before {
+  font-size: 1rem;
+}
+
+.ql-picker.ql-size .ql-picker-item[data-value="txt-xs"]::before {
+  font-size: 1.25rem;
+}
+
+.ql-picker.ql-size .ql-picker-item[data-value="txt-l"]::before {
+  font-size: 1.5rem;
+}
+
+.ql-picker.ql-size .ql-picker-item[data-value="txt-xl"]::before {
+  font-size: 1.75rem;
+}
+
+.ql-picker.ql-size .ql-picker-item[data-value="txt-big"]::before {
+  font-size: 2rem;
+}
+
+.ql-size-Normal {
+  font-size: 1.15rem;
+}
+
+.ql-size-txt-xxs {
+  font-size: 1rem;
+}
+
+.ql-size-txt-xs {
+  font-size: 1.25rem;
+}
+
+.ql-size-txt-l {
+  font-size: 1.5rem;
+}
+
+.ql-size-txt-xl {
+  font-size: 1.75rem;
+}
+
+.ql-size-txt-big {
+  font-size: 2rem;
+}
+
+
 /* Quill 字型自定義 */
 .ql-picker.ql-font {
   .ql-picker-item {
@@ -188,7 +262,7 @@
 
     &:before {
       content: attr(data-value) !important;
-      font-size: 12px;
+      font-size: 14px;
     }
   }
 }
@@ -197,7 +271,7 @@
   .ql-active {
     &:before {
       content: attr(data-value) !important;
-      font-size: 12px;
+      font-size: 14px;
     }
   }
 }

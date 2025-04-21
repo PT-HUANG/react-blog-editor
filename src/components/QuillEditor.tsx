@@ -4,6 +4,7 @@ import "react-quill-new/dist/quill.snow.css";
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Font } from "@/customFormats/font";
+import { CustomSize } from "@/customFormats/size";
 import CustomDivider from "@/customBlots/divider";
 import CustomLink from "@/customFormats/link";
 import CustomVideo from "@/customFormats/video";
@@ -44,7 +45,8 @@ function QuillEditor({ title, description, keywords, GTM }: QuillEditorProps) {
         },
       },
       container: [
-        [{ size: ["small", false, "large", "huge"] }, { font: Font.whitelist }],
+        // [{ size: ["small", false, "large", "huge"] }, { font: Font.whitelist }],
+        [{ size: CustomSize.whitelist }, { font: Font.whitelist }],
         ["divider", "bold", "italic", "underline"],
         [{ list: "ordered" }, { list: "bullet" }],
         ["link", "image", "video"],
@@ -122,6 +124,17 @@ function QuillEditor({ title, description, keywords, GTM }: QuillEditorProps) {
       '<span class="text-highlight">$1</span>'
     );
 
+    // ---------- ✨ 特殊字體顏色樣式轉 class ----------
+    html = html.replace(
+      /<(\w+)\s+style="[^"]*color:\s*rgb\(255,\s*0,\s*0\)[^"]*">([^<]*)<\/\1>/g,
+      '<$1 class="text-red">$2</$1>'
+    );
+
+    html = html.replace(
+      /<(\w+)\s+style="[^"]*color:\s*rgb\(0,\s*0,\s*255\)[^"]*">([^<]*)<\/\1>/g,
+      '<$1 class="text-blue">$2</$1>'
+    );
+
     // ---------- 🏷️ 替換對齊 class ----------
     html = html.replace(
       / class="ql-align-center"/g,
@@ -137,7 +150,11 @@ function QuillEditor({ title, description, keywords, GTM }: QuillEditorProps) {
     );
 
     // ---------- 🔠 替換文字大小 class ----------
-    html = html.replace(/ class="ql-size-large"/g, ' class="font-size-large"');
+    html = html.replace(/ class="ql-size-txt-xxs"/g, ' class="txt-xxs"');
+    html = html.replace(/ class="ql-size-txt-xs"/g, ' class="txt-xs"');
+    html = html.replace(/ class="ql-size-txt-l"/g, ' class="txt-l"');
+    html = html.replace(/ class="ql-size-txt-xl"/g, ' class="txt-xl"');
+    html = html.replace(/ class="ql-size-txt-big"/g, ' class="txt-big"');
 
     // ---------- 🧱 清理結構 ----------
     // 移除多餘的 <span> 包裹
