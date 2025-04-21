@@ -10,6 +10,7 @@ import CustomLink from "@/customFormats/link";
 import CustomVideo from "@/customFormats/video";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
+import { jsFiles } from "@/constants/jsFiles";
 import { cssFiles } from "@/constants/cssFiles";
 
 const icons = ReactQuill.Quill.import("ui/icons") as Record<string, string>;
@@ -81,7 +82,13 @@ function QuillEditor({ title, description, keywords, GTM }: QuillEditorProps) {
       // 1. 將 index.html 加入到主資料夾中
       mainFolder?.file("index.html", fullHtml);
 
-      // 2. 將外部導入的 CSS 檔案加入到主資料夾底下的 css 資料夾
+      // 2-1. 將外部導入的 JavaScript 檔案加入到主資料夾底下的 js 資料夾
+      const jsFolder = mainFolder?.folder("js");
+      for (const file of jsFiles) {
+        jsFolder?.file(file.filename, file.content);
+      }
+
+      // 2-2. 將外部導入的 CSS 檔案加入到主資料夾底下的 css 資料夾
       const cssFolder = mainFolder?.folder("css");
       for (const file of cssFiles) {
         cssFolder?.file(file.filename, file.content);
@@ -279,8 +286,8 @@ function QuillEditor({ title, description, keywords, GTM }: QuillEditorProps) {
         <script src="js/lazy.js"></script>
 
         <!-- ※LP用|編集削除禁止 -->
-        <div id="acs_lp_form"></div>
-        <script src="https://code.cros.tw/init.js"></script>
+        <!-- <div id="acs_lp_form"></div>
+        <script src="https://code.cros.tw/init.js"></script> -->
         <!-- ※LP用|編集削除禁止 -->
       </body>
     </html>`;
