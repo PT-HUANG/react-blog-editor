@@ -58,12 +58,38 @@ function QuillEditor({ title, description, keywords, GTM }: QuillEditorProps) {
     },
   };
 
+  const handlePreview = () => {
+    const previewWindow = window.open("", "_blank");
+    if (!previewWindow) return;
+    const doc = previewWindow.document;
+
+    // head
+    const head = doc.head;
+    const style = doc.createElement("style");
+    let cssContent = ``;
+    for (const file of cssFiles) {
+      cssContent += file.content;
+    }
+    style.textContent = cssContent;
+    head.appendChild(style);
+
+    // body
+    if (quillRef.current) {
+      const editor = quillRef.current.getEditor();
+      const length = editor.getLength();
+      const html = editor.getSemanticHTML(0, length);
+      const content = cleanHtmlContent(html);
+      doc.body.innerHTML = `<div class="CP">${content}</div>`;
+    }
+  };
+
   const handleExport = async () => {
     if (quillRef.current) {
       const editor = quillRef.current.getEditor();
       const length = editor.getLength();
       const html = editor.getSemanticHTML(0, length);
-      const fullHtml = htmlStructure1 + cleanHtmlContent(html) + htmlStructure2;
+      const content = replaceImgSrc(cleanHtmlContent(html));
+      const fullHtml = htmlStructure1 + content + htmlStructure2;
 
       // debug
       console.log(fullHtml);
@@ -102,6 +128,22 @@ function QuillEditor({ title, description, keywords, GTM }: QuillEditorProps) {
         saveAs(content, `${folderName}.zip`);
       });
     }
+  };
+
+  const replaceImgSrc = (html: string): string => {
+    // ---------- 🖼️ 處理圖片 ----------
+    let count = 1;
+
+    // 將所有 img src 改為 images/{count}.jpg
+    html = html.replace(
+      /<img\s+[^>]*src="[^"]+?"([^>]*)>/gs,
+      (_, attrs) => `<img src="images/${count++}.jpg"${attrs}>`
+    );
+
+    // 移除完全沒有內容的 <p> 標籤（包含有 class 的情況）
+    html = html.replace(/<p[^>]*>\s*<\/p>/g, "");
+
+    return html;
   };
 
   const cleanHtmlContent = (html: string): string => {
@@ -176,17 +218,17 @@ function QuillEditor({ title, description, keywords, GTM }: QuillEditorProps) {
     // 移除 <p> 包住 <img> 的情況（含任何屬性，如 class）
     html = html.replace(/<p[^>]*>\s*(<img[^>]+>)\s*<\/p>/g, "$1");
 
-    // ---------- 🖼️ 處理圖片 ----------
-    let count = 1;
+    // // ---------- 🖼️ 處理圖片 ----------
+    // let count = 1;
 
-    // 將所有 img src 改為 images/{count}.jpg
-    html = html.replace(
-      /<img\s+[^>]*src="[^"]+?"([^>]*)>/gs,
-      (_, attrs) => `<img src="images/${count++}.jpg"${attrs}>`
-    );
+    // // 將所有 img src 改為 images/{count}.jpg
+    // html = html.replace(
+    //   /<img\s+[^>]*src="[^"]+?"([^>]*)>/gs,
+    //   (_, attrs) => `<img src="images/${count++}.jpg"${attrs}>`
+    // );
 
-    // 移除完全沒有內容的 <p> 標籤（包含有 class 的情況）
-    html = html.replace(/<p[^>]*>\s*<\/p>/g, "");
+    // // 移除完全沒有內容的 <p> 標籤（包含有 class 的情況）
+    // html = html.replace(/<p[^>]*>\s*<\/p>/g, "");
 
     return html;
   };
@@ -309,7 +351,10 @@ function QuillEditor({ title, description, keywords, GTM }: QuillEditorProps) {
         >
           Export
         </Button>
-        <Button className="mx-1 rounded-sm bg-yellow-400 hover:bg-yellow-300 cursor-pointer">
+        <Button
+          onClick={handlePreview}
+          className="mx-1 rounded-sm bg-yellow-400 hover:bg-yellow-300 cursor-pointer"
+        >
           Preview
         </Button>
       </div>
