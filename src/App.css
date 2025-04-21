@@ -125,6 +125,10 @@ p {
   font-size: 1.15rem !important;
 }
 
+p>hr {
+  margin: 2rem 0;
+}
+
 .ql-toolbar {
   border: 2px solid #a99072 !important;
   border-radius: 6px 6px 0 0;
