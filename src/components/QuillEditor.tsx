@@ -213,7 +213,7 @@ function QuillEditor({ title, description, keywords, GTM }: QuillEditorProps) {
     html = html.replace(/<p><hr><\/p>/g, "<hr>");
 
     // 清除 &nbsp;
-    html = html.replace(/&nbsp;/g, "");
+    html = html.replace(/&nbsp;/g, " ");
 
     // 移除 <p> 包住 <img> 的情況（含任何屬性，如 class）
     html = html.replace(/<p[^>]*>\s*(<img[^>]+>)\s*<\/p>/g, "$1");
