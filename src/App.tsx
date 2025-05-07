@@ -5,7 +5,7 @@ import { BlogEditor } from "@/pages";
 function App() {
   return (
     <div className="app">
-      <BrowserRouter>
+      <BrowserRouter basename="/react-blog-editor">
         <Routes>
           <Route path="/" element={<BlogEditor />} />
         </Routes>
